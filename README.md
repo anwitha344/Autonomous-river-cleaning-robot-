@@ -2,7 +2,7 @@
 
 A computer vision system for detecting floating plastic waste and determining its location for use in an autonomous river cleaning robot.
 
-## Final Architecture
+## Architecture
 
 ```text
 Camera
