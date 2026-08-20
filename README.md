@@ -3,8 +3,8 @@
 Real-time detection of floating plastic waste in water using a fine-tuned
 [YOLOv8](https://github.com/ultralytics/ultralytics) object detector.
 
-> **Add a banner image here.** A wide photo of plastic debris in water
-> works well (e.g. your own dataset sample, or a free photo from
+> ![Uploading image.png…]()
+
 > [Unsplash](https://unsplash.com/s/photos/plastic-pollution-water) /
 > [Pexels](https://www.pexels.com/search/ocean%20plastic/)).
 > ```markdown
