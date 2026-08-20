@@ -1,4 +1,4 @@
-# 🌊 Plastic Waste on Water — Detection with YOLOv8
+# Plastic Waste on Water — Detection with YOLOv8
 
 Real-time detection of floating plastic waste in water using a fine-tuned
 [YOLOv8](https://github.com/ultralytics/ultralytics) object detector.
