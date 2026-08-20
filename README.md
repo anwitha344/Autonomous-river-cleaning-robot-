@@ -3,14 +3,6 @@
 Real-time detection of floating plastic waste in water using a fine-tuned
 [YOLOv8](https://github.com/ultralytics/ultralytics) object detector.
 
-> ![Uploading image.png…]()
-
-> [Unsplash](https://unsplash.com/s/photos/plastic-pollution-water) /
-> [Pexels](https://www.pexels.com/search/ocean%20plastic/)).
-> ```markdown
-> ![banner](assets/banner.jpg)
-> ```
-
 ---
 
 ## Overview
@@ -69,6 +61,8 @@ plastic-waste-detection/
 
 This project expects a dataset exported in **YOLOv8 format** (e.g. from
 [Roboflow](https://roboflow.com/)), with the standard structure:
+![Uploading image.png…]()
+
 
 ```
 dataset/
