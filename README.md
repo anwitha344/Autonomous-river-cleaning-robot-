@@ -1,85 +1,158 @@
-# Plastic Waste on Water — Detection with YOLOv8
+# Autonomous River Cleaning Robot
 
-Real-time detection of floating plastic waste in water using a fine-tuned
-[YOLOv8](https://github.com/ultralytics/ultralytics) object detector.
+A computer vision system for detecting floating plastic waste and determining its location for use in an autonomous river cleaning robot.
 
----
+## Final Architecture
 
-## Overview
-
-Plastic pollution in rivers, lakes, and oceans is a major environmental
-problem, and manually monitoring it is slow and labor-intensive. This
-project trains a YOLOv8 object detector to automatically locate plastic
-waste in images and video frames, so that the output can feed into
-downstream systems — e.g. alerting, mapping hotspots, or guiding an
-autonomous skimmer/collection robot toward detected debris.
-
-**Key features**
-- Fine-tunes a pretrained YOLOv8 model on a custom plastic-waste dataset
-- Scripts for dataset sanity-checking, training, evaluation, and inference
-- Quadrant tagging: each detection is labeled with which quadrant of the
-  frame it falls in (Q1–Q4), useful as a simple steering signal for a
-  physical collection device
-- Works on images, folders of images, video files, or a live webcam feed
-
----
-
-## Example Detections
-
-> Replace these with real screenshots from `src/detect.py` output
-> (saved under `results/predictions/`) once you've trained your model.
-> ```markdown
-> ![sample detection 1](assets/sample_detection_1.jpg)
-> ![sample detection 2](assets/sample_detection_2.jpg)
-> ```
-
----
-
-## Project Structure
-
-```
-plastic-waste-detection/
-├── README.md
-├── requirements.txt
-├── LICENSE
-├── .gitignore
-├── config/
-│   └── data.yaml              # dataset config (paths + class names)
-├── src/
-│   ├── utils.py                # shared helpers (box conversion, quadrants, drawing)
-│   ├── visualize_dataset.py    # sanity-check dataset labels before training
-│   ├── train.py                # fine-tune YOLOv8 on your dataset
-│   ├── evaluate.py             # compute mAP / precision / recall on val or test split
-│   └── detect.py                # run inference on images / video / webcam
-├── assets/                      # README images go here
-└── results/                     # created at runtime: predictions + eval metrics
+```text
+Camera
+   |
+   v
+Video / Image Frame
+   |
+   v
+YOLOv8 Plastic Detection
+   |
+   +----------------+
+   |                |
+   v                v
+Bounding Box     Confidence
+   |
+   v
+Object Center
+   |
+   v
+Quadrant Detection
+   |
+   v
+Navigation Controller
+   |
+   +------------+
+   |            |
+   v            v
+Motor Control  Collection Mechanism
+   |            |
+   +------+-----+
+          |
+          v
+   Plastic Collection
 ```
 
----
+## Model
 
-## Dataset
+The project uses **YOLOv8** with transfer learning.
 
-This project expects a dataset exported in **YOLOv8 format** (e.g. from
-[Roboflow](https://roboflow.com/)), with the standard structure:
+A pretrained YOLOv8 model is fine tuned on an annotated plastic waste dataset containing one class:
+
+```text
+0: plastic
+```
+
+The model outputs:
+
+```text
+Class
+Confidence
+Bounding Box
+```
+
+The bounding box center is then used to determine which quadrant of the camera frame contains the detected plastic.
+
+```text
++-------------------+-------------------+
+|        Q1         |        Q2         |
+|                   |                   |
++-------------------+-------------------+
+|        Q3         |        Q4         |
+|                   |                   |
++-------------------+-------------------+
+```
+
+This provides a simple directional signal for the robot.
+
+## Project Workflow
+
+1. Prepare the plastic waste dataset in YOLO format.
+2. Configure dataset paths and classes in `data.yaml`.
+3. Visualize annotations using `visualize_dataset.py`.
+4. Load pretrained YOLOv8 weights.
+5. Fine tune the model using `train.py`.
+6. Save the best trained checkpoint.
+7. Evaluate the model using `evaluate.py`.
+8. Calculate Precision, Recall, mAP50 and mAP50 to 95.
+9. Run inference using `detect.py`.
+10. Detect plastic from images, videos or a webcam.
+11. Calculate the center of each detected bounding box.
+12. Assign the detected plastic to a quadrant.
+13. Pass the spatial information to the robot navigation system.
+
+## Repository Structure
+
+```text
+Autonomous River Cleaning Robot
+|
++-- data.yaml
++-- train.py
++-- evaluate.py
++-- detect.py
++-- visualize_dataset.py
++-- utils.py
++-- requirements.txt
++-- README.md
+```
+
+## Main Components
+
+### `train.py`
+
+Trains the YOLOv8 model using the plastic waste dataset.
+
+Default configuration:
+
+```text
+Model: YOLOv8n
+Epochs: 100
+Image Size: 640
+Batch Size: 16
+Early Stopping: 20 epochs
+```
+
+### `evaluate.py`
+
+Evaluates the trained model using:
+
+```text
+Precision
+Recall
+mAP50
+mAP50 to 95
+```
+
+### `detect.py`
+
+Runs the trained model on:
+
+```text
+Images
+Videos
+Webcam
+```
 ![Uploading image.png…]()
 
 
+It also performs quadrant detection for robotic navigation.
+
+### `visualize_dataset.py`
+
+Displays annotated dataset samples to verify that the bounding boxes and labels are correct before training.
+
+### `utils.py`
+
+Contains utilities for:
+
+```text
+YOLO coordinate conversion
+Class loading
+Bounding box visualization
+Quadrant calculation
 ```
-dataset/
-├── train/
-│   ├── images/
-│   └── labels/
-├── valid/
-│   ├── images/
-│   └── labels/
-├── test/
-│   ├── images/
-│   └── labels/
-└── data.yaml
-```
-
-
-Update [`config/data.yaml`](config/data.yaml) to point at your dataset's
-location and list your actual class names.
-
-
