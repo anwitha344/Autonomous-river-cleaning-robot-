@@ -1,0 +1,20 @@
+# YOLOv8 dataset configuration for Plastic Waste on Water detection
+# Update the paths below to point to your local/Drive dataset location.
+#
+# Expected folder structure (Roboflow YOLOv8 export format):
+#   dataset/
+#     train/images, train/labels
+#     valid/images, valid/labels
+#     test/images,  test/labels
+
+path: ../dataset          # root dir (relative to this file, or use an absolute path)
+train: train/images
+val: valid/images
+test: test/images
+
+# Number of classes — update to match your dataset
+nc: 1
+
+# Class names — update to match your dataset (order matters, must match label indices)
+names:
+  0: plastic
